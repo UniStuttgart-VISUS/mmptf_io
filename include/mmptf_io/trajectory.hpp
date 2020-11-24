@@ -40,23 +40,23 @@ namespace mmptf {
             id_t id = 0;
             trajectory_header header = { 0 };
             file >> id;
-            file.read(&header, sizeof(trajectory_header));
+            file.read(reinterpret_cast<char*>(&header), sizeof(trajectory_header));
             auto const num_elements = get_num_elements(header);
 
             trajectory traj;
             traj._header = header;
             traj._positions.resize(num_elements);
 
-            file.read(traj._positions.data(), traj._positions.size() * sizeof(decltype(traj._positions)::value_type));
+            file.read(reinterpret_cast<char*>(traj._positions.data()), traj._positions.size() * sizeof(decltype(traj._positions)::value_type));
 
             if (has_colors) {
                 traj._colors.resize(num_elements);
-                file.read(traj._colors.data(), traj._colors.size() * sizeof(decltype(traj._colors)::value_type));
+                file.read(reinterpret_cast<char*>(traj._colors.data()), traj._colors.size() * sizeof(decltype(traj._colors)::value_type));
             }
 
             if (has_attributes) {
                 traj._attributes.resize(num_elements);
-                file.read(traj._attributes.data(), traj._attributes.size() * sizeof(decltype(traj._attributes)::value_type));
+                file.read(reinterpret_cast<char*>(traj._attributes.data()), traj._attributes.size() * sizeof(decltype(traj._attributes)::value_type));
             }
 
             ret[id] = traj;
@@ -66,13 +66,13 @@ namespace mmptf {
 
     inline void write_trajectories(std::ofstream& file, trajectory_map_t const& trajectories) {
         for (auto const& traj : trajectories) {
-            file.write(&traj.first, sizeof(traj.first));
+            file.write(reinterpret_cast<char const*>(&traj.first), sizeof(traj.first));
             auto const& traj_data = traj.second;
             auto const& traj_header = traj.second._header;
-            file.write(&traj_header, sizeof(traj_header));
-            file.write(traj_data._positions.data(), traj_data._positions.size() * sizeof(decltype(traj_data._positions)::value_type));
-            file.write(traj_data._colors.data(), traj_data._colors.size() * sizeof(decltype(traj_data._colors)::value_type));
-            file.write(traj_data._attributes.data(), traj_data._attributes.size() * sizeof(decltype(traj_data._attributes)::value_type));
+            file.write(reinterpret_cast<char const*>(&traj_header), sizeof(traj_header));
+            file.write(reinterpret_cast<char const*>(traj_data._positions.data()), traj_data._positions.size() * sizeof(decltype(traj_data._positions)::value_type));
+            file.write(reinterpret_cast<char const*>(traj_data._colors.data()), traj_data._colors.size() * sizeof(decltype(traj_data._colors)::value_type));
+            file.write(reinterpret_cast<char const*>(traj_data._attributes.data()), traj_data._attributes.size() * sizeof(decltype(traj_data._attributes)::value_type));
         }
     }
 }
