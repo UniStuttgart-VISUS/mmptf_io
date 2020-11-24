@@ -7,11 +7,11 @@
 #include <unordered_map>
 
 namespace mmptf {
-    using position = std::array<float, 3> _pos;
+    using position = std::array<float, 3>;
 
-    using color = std::array<std::uint8_t, 4> _col;
+    using color = std::array<std::uint8_t, 4>;
 
-    using attribute = std::array<float, 4> _attr;
+    using attribute = std::array<float, 4>;
 
     using id_t = std::uint64_t;
 
